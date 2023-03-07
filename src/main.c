@@ -43,6 +43,9 @@ bool initialize_window(void) {
 void setup(void){
 	color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
 
+	if (color_buffer == NULL) {
+		fprintf(stderr, "Error creating color buffer.\n");
+	}
 }
 
 void process_input(void) {
@@ -64,9 +67,19 @@ void update(void){
 
 }
 
+void clear_color_buffer(uint32_t color) {
+	for (int y = 0; y < window_height; y++) {
+		for (int x = 0; x < window_width; x++) {
+			color_buffer[(window_width * y) + x] = color;
+		}
+	}
+}
+
 void render(void){
 	SDL_SetRenderDrawColor(renderer, 40, 48, 83, 1);
 	SDL_RenderClear(renderer);
+
+	clear_color_buffer(0x386641);
 
 	SDL_RenderPresent(renderer);
 }
