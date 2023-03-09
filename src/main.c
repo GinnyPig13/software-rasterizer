@@ -17,6 +17,13 @@ bool initialize_window(void) {
 		fprintf(stderr, "Error initializing SDL.\n");
 		return false;
 	}
+
+	SDL_DisplayMode display_mode;
+	SDL_GetCurrentDisplayMode(0, &display_mode);
+
+	window_width = display_mode.w;
+	window_height = display_mode.h;
+
 	//Create a SDL Window
 	window = SDL_CreateWindow(
 		NULL,
