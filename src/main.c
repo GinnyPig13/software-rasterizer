@@ -11,6 +11,7 @@ uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
 int window_width = 800;
 int window_height = 600;
+int grid_multiple_of = 10;
 
 bool initialize_window(void) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -75,11 +76,25 @@ void process_input(void) {
 			if(event.key.keysym.sym == SDLK_ESCAPE)
 				is_it_running = false;
 			break;
+
 	}
 }
 
 void update(void){
 
+}
+
+void draw_grid(int multiple_of) {
+	//TODO:
+	//Draw every row and column that is a multiple of 10
+		//1 for loop for rows, 1 for columns
+		//Set a parameter for multiple of
+	for(int index = 0; index < window_width; index++){
+		color_buffer[index] = 0x00FF0000;
+	}
+	for(int index = 0; index % window_width == 0 && index < (window_width * window_height); index += window_width){
+		color_buffer[index] = 0x000000FF;
+	}
 }
 
 void render_color_buffer(void) {
@@ -104,8 +119,10 @@ void render(void){
 	SDL_SetRenderDrawColor(renderer, 40, 48, 83, 1);
 	SDL_RenderClear(renderer);
 
+	draw_grid(grid_multiple_of);
+
 	render_color_buffer();
-	clear_color_buffer(0x386641);
+	clear_color_buffer(0x00386641);
 
 	SDL_RenderPresent(renderer);
 }
