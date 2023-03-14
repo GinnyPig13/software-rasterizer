@@ -85,15 +85,28 @@ void update(void){
 }
 
 void draw_grid(int multiple_of) {
-	//TODO:
-	//Draw every row and column that is a multiple of 10
-		//1 for loop for rows, 1 for columns
-		//Set a parameter for multiple of
-	for(int index = 0; index < window_width; index++){
-		color_buffer[index] = 0x00FF0000;
+	//Vertical white lines
+	for(int index = 0; index < (window_width * window_height) && index < (window_width * window_height); index += window_width){
+		for(int currentIndex = index; currentIndex < index + window_width && currentIndex < (window_width * window_height); currentIndex += multiple_of){
+			color_buffer[currentIndex] = 0xFFFFFFFC;
+		}
 	}
-	for(int index = 0; index % window_width == 0 && index < (window_width * window_height); index += window_width){
-		color_buffer[index] = 0x000000FF;
+
+	//Horizontal white lines
+	for(int index = 0; index < (window_width * window_height); index += (multiple_of * window_width)){
+		for(int currentIndex = index; currentIndex < index + window_width && currentIndex < (window_width * window_height); currentIndex++){
+			color_buffer[currentIndex] = 0xFFFFFFFC;
+		}
+	}
+}
+
+void draw_rect(int top_left_x, int top_left_y, int width, int height, uint32_t color){
+	int index = (top_left_y * window_width) + top_left_x;
+	for(int timesLooped = 0; timesLooped < height; timesLooped++){
+		for(int currentIndex = index; currentIndex < index + width; currentIndex++){
+			color_buffer[currentIndex] = color;
+		}
+		index += window_width;
 	}
 }
 
@@ -120,6 +133,7 @@ void render(void){
 	SDL_RenderClear(renderer);
 
 	draw_grid(grid_multiple_of);
+	draw_rect(3000, 761, 55, 555, 0x004D194D);
 
 	render_color_buffer();
 	clear_color_buffer(0x00386641);
