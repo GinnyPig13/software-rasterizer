@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "display.h"
+#include "vector.h"
 
 
 bool is_it_running = false;
@@ -44,6 +45,8 @@ void render(void){
 	SDL_RenderClear(renderer);
 
 	draw_grid(grid_multiple_of);
+
+	draw_pixel(20, 20, 0xFFFFFF00);
 	draw_rect(3000, 761, 55, 555, 0x004D194D);
 
 	render_color_buffer();
@@ -56,6 +59,8 @@ int main(void) {
 
 	is_it_running = initialize_window();
 	setup();
+
+	struct vec3 myVector = {2.0, 3.0, -4.0};
 
 	while(is_it_running) {
 		process_input();

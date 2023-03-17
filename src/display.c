@@ -60,6 +60,13 @@ void draw_grid(int multiple_of) {
 	}
 }
 
+void draw_pixel(int x, int y, uint32_t color) {
+    if (x < window_width && y < window_height)
+    {
+        color_buffer[(window_width * y) + x] = color;
+    }  
+}
+
 void draw_rect(int top_left_x, int top_left_y, int width, int height, uint32_t color){
 	int index = (top_left_y * window_width) + top_left_x;
 	for(int timesLooped = 0; timesLooped < height; timesLooped++){
