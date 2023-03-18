@@ -6,7 +6,7 @@ uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
 int window_width = 800;
 int window_height = 600;
-int grid_multiple_of = 50;
+int grid_multiple_of = 20;
 
 bool initialize_window(void) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -61,12 +61,13 @@ void draw_grid(int multiple_of) {
 }
 
 void draw_pixel(int x, int y, uint32_t color) {
-    if (x < window_width && y < window_height)
+    if (x >= 0 && x < window_width && y >= 0 && y < window_height)
     {
         color_buffer[(window_width * y) + x] = color;
     }  
 }
 
+//TODO: make draw rect work with draw pixel like he did
 void draw_rect(int top_left_x, int top_left_y, int width, int height, uint32_t color){
 	int index = (top_left_y * window_width) + top_left_x;
 	for(int timesLooped = 0; timesLooped < height; timesLooped++){

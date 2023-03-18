@@ -2,6 +2,11 @@
 #include "display.h"
 #include "vector.h"
 
+#define points_in_array (9 * 9 * 9)
+struct vec3 cube_points[points_in_array];
+struct vec2 projected_points[points_in_array];
+
+float fov_factor = 128;
 
 bool is_it_running = false;
 
@@ -18,6 +23,25 @@ void setup(void){
 	if (color_buffer == NULL) {
 		fprintf(stderr, "Error creating color buffer.\n");
 	}
+
+	int point_count = 0;
+	for (float x = -1; x <= 1; x += 0.25)
+	{
+		for (float y = -1; y <= 1; y += 0.25)
+		{
+			for (float z = -1; z <= 1; z += 0.25)
+			{
+				struct vec3 new_point =
+				{
+					.x = x, .y = y, .z = z
+				};
+				cube_points[point_count++] = new_point;
+			}
+			
+		}
+		
+	}
+	
 }
 
 void process_input(void) {
@@ -36,21 +60,37 @@ void process_input(void) {
 	}
 }
 
-void update(void){
+struct vec2 projection(struct vec3 point){
+	struct vec2 projected_point = {
+		.x = (fov_factor * point.x),
+		.y = (fov_factor * point.y) 
+	};
+	return projected_point;
+}
 
+void update(void){
+	for (int i = 0; i < points_in_array; i++)
+	{
+		struct vec3 point = cube_points[i];
+		struct vec2 projected_point = projection(point);
+		projected_points[i] = projected_point;
+		
+	}
+	
 }
 
 void render(void){
-	SDL_SetRenderDrawColor(renderer, 40, 48, 83, 1);
-	SDL_RenderClear(renderer);
-
 	draw_grid(grid_multiple_of);
 
-	draw_pixel(20, 20, 0xFFFFFF00);
-	draw_rect(3000, 761, 55, 555, 0x004D194D);
+	for (int i = 0; i < points_in_array; i++)
+	{
+		struct vec2 projected_point = projected_points[i];
+		draw_rect(projected_point.x + (window_width/2), projected_point.y + (window_height/2), 4, 4, 0xFFA8DADC);
+	}
+	
 
 	render_color_buffer();
-	clear_color_buffer(0x00386641);
+	clear_color_buffer(0xFF283053);
 
 	SDL_RenderPresent(renderer);
 }
@@ -59,8 +99,6 @@ int main(void) {
 
 	is_it_running = initialize_window();
 	setup();
-
-	struct vec3 myVector = {2.0, 3.0, -4.0};
 
 	while(is_it_running) {
 		process_input();
