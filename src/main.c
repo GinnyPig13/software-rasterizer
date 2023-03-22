@@ -7,6 +7,7 @@ struct vec3 cube_points[points_in_array];
 struct vec2 projected_points[points_in_array];
 
 struct vec3 camera_position = {0, 0, -5};
+struct vec3 cube_rotation = {0, 0, 0};
 
 float fov_factor = 640;
 
@@ -71,11 +72,16 @@ struct vec2 projection(struct vec3 point){
 }
 
 void update(void){
+	cube_rotation.y += 0.1;
+	
 	for (int i = 0; i < points_in_array; i++)
 	{
 		struct vec3 point = cube_points[i];
-		point.z -= camera_position.z;
-		struct vec2 projected_point = projection(point);
+
+		struct vec3 transformed_point = rotate_y(point, cube_rotation.y);
+
+		transformed_point.z -= camera_position.z;
+		struct vec2 projected_point = projection(transformed_point);
 		projected_points[i] = projected_point;
 		
 	}
