@@ -72,13 +72,17 @@ struct vec2 projection(struct vec3 point){
 }
 
 void update(void){
-	cube_rotation.y += 0.1;
+	cube_rotation.y += 0.01f;
+	cube_rotation.z += 0.01f;
+	cube_rotation.x += 0.01f;
 	
 	for (int i = 0; i < points_in_array; i++)
 	{
 		struct vec3 point = cube_points[i];
 
-		struct vec3 transformed_point = rotate_y(point, cube_rotation.y);
+		struct vec3 transformed_point = rotate_x(point, cube_rotation.x);
+		transformed_point = rotate_y(transformed_point, cube_rotation.y);
+		transformed_point = rotate_z(transformed_point, cube_rotation.z);
 
 		transformed_point.z -= camera_position.z;
 		struct vec2 projected_point = projection(transformed_point);
@@ -89,7 +93,7 @@ void update(void){
 }
 
 void render(void){
-	draw_grid(grid_multiple_of);
+	//draw_grid(grid_multiple_of);
 
 	for (int i = 0; i < points_in_array; i++)
 	{
