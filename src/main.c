@@ -12,6 +12,7 @@ struct vec3 cube_rotation = {0, 0, 0};
 float fov_factor = 640;
 
 bool is_it_running = false;
+int previous_frame_time = 0;
 
 void setup(void){
 	color_buffer = (uint32_t*) malloc(sizeof(uint32_t) * window_width * window_height);
@@ -72,6 +73,16 @@ struct vec2 projection(struct vec3 point){
 }
 
 void update(void){
+	int time_to_wait = FRAME_TARGET_TIME - (SDL_GetTicks() - previous_frame_time);
+
+	if (time_to_wait > 0 && time_to_wait <= FRAME_TARGET_TIME)
+	{
+		SDL_Delay(time_to_wait);
+	}
+	
+
+	previous_frame_time = SDL_GetTicks();
+
 	cube_rotation.y += 0.01f;
 	cube_rotation.z += 0.01f;
 	cube_rotation.x += 0.01f;
@@ -95,7 +106,7 @@ void update(void){
 void render(void){
 	//draw_grid(grid_multiple_of);
 
-	for (int i = 0; i < points_in_array; i++)
+	for (int i = 0; i < points_in_array; i++ )
 	{
 		struct vec2 projected_point = projected_points[i];
 		draw_rect(projected_point.x + (window_width/2), projected_point.y + (window_height/2), 4, 4, 0xFFA8DADC);
@@ -111,6 +122,7 @@ void render(void){
 int main(void) {
 
 	is_it_running = initialize_window();
+	
 	setup();
 
 	while(is_it_running) {
