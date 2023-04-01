@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include "display.h"
 #include "vector.h"
+#include "mesh.h"
 
-#define points_in_array (9 * 9 * 9)
-struct vec3 cube_points[points_in_array];
-struct vec2 projected_points[points_in_array];
+struct triangle triangles_to_render[N_MESH_FACES];
 
 struct vec3 camera_position = {0, 0, -5};
 struct vec3 cube_rotation = {0, 0, 0};
@@ -26,26 +25,7 @@ void setup(void){
 
 	if (color_buffer == NULL) {
 		fprintf(stderr, "Error creating color buffer.\n");
-	}
-
-	int point_count = 0;
-	for (float x = -1; x <= 1; x += 0.25)
-	{
-		for (float y = -1; y <= 1; y += 0.25)
-		{
-			for (float z = -1; z <= 1; z += 0.25)
-			{
-				struct vec3 new_point =
-				{
-					.x = x, .y = y, .z = z
-				};
-				cube_points[point_count++] = new_point;
-			}
-			
-		}
-		
-	}
-	
+	}	
 }
 
 void process_input(void) {
@@ -87,29 +67,48 @@ void update(void){
 	cube_rotation.z += 0.01f;
 	cube_rotation.x += 0.01f;
 	
-	for (int i = 0; i < points_in_array; i++)
+	for (int i = 0; i < N_MESH_FACES; i++) 
 	{
-		struct vec3 point = cube_points[i];
+		struct face mesh_face = mesh_faces[i];
 
-		struct vec3 transformed_point = rotate_x(point, cube_rotation.x);
-		transformed_point = rotate_y(transformed_point, cube_rotation.y);
-		transformed_point = rotate_z(transformed_point, cube_rotation.z);
+		struct vec3 face_vertices[3];
+		face_vertices[0] = mesh_vertices[mesh_face.a];
+		face_vertices[1] = mesh_vertices[mesh_face.b];
+		face_vertices[2] = mesh_vertices[mesh_face.c];
 
-		transformed_point.z -= camera_position.z;
-		struct vec2 projected_point = projection(transformed_point);
-		projected_points[i] = projected_point;
+		struct triangle projected_triangle;
+
+		for (int j = 0; j < 3; j++)
+		{
+			struct vec3 transformed_vertex = face_vertices[j];
+
+			transformed_vertex = rotate_x(transformed_vertex, cube_rotation.x);
+			transformed_vertex = rotate_y(transformed_vertex, cube_rotation.y);
+			transformed_vertex = rotate_z(transformed_vertex, cube_rotation.z);
+
+			transformed_vertex.z -= camera_position.z;
+			
+			struct vec2 projected_point = projection(transformed_vertex);
+
+			projected_point.x += (window_width / 2);
+			projected_point.y += (window_height / 2);
+			
+			projected_triangle.points[j] = projected_point;
+		}
 		
+		triangles_to_render[i] = projected_triangle;
 	}
-	
 }
 
 void render(void){
 	//draw_grid(grid_multiple_of);
 
-	for (int i = 0; i < points_in_array; i++ )
+	for (int i = 0; i < N_MESH_FACES; i++ )
 	{
-		struct vec2 projected_point = projected_points[i];
-		draw_rect(projected_point.x + (window_width/2), projected_point.y + (window_height/2), 4, 4, 0xFFA8DADC);
+		struct triangle projected_triangle = triangles_to_render[i];
+		draw_rect(projected_triangle.points[0].x, projected_triangle.points[0].y, 3, 3, 0xFFA8DADC);
+		draw_rect(projected_triangle.points[1].x, projected_triangle.points[1].y, 3, 3, 0xFFA8DADC);
+		draw_rect(projected_triangle.points[2].x, projected_triangle.points[2].y, 3, 3, 0xFFA8DADC);
 	}
 	
 
