@@ -109,6 +109,9 @@ void render(void){
 		draw_rect(projected_triangle.points[0].x, projected_triangle.points[0].y, 3, 3, 0xFFA8DADC);
 		draw_rect(projected_triangle.points[1].x, projected_triangle.points[1].y, 3, 3, 0xFFA8DADC);
 		draw_rect(projected_triangle.points[2].x, projected_triangle.points[2].y, 3, 3, 0xFFA8DADC);
+		draw_line(projected_triangle.points[0].x, projected_triangle.points[0].y, projected_triangle.points[1].x, projected_triangle.points[1].y, 0xFFA8DADC);
+		draw_line(projected_triangle.points[1].x, projected_triangle.points[1].y, projected_triangle.points[2].x, projected_triangle.points[2].y, 0xFFA8DADC);
+		draw_line(projected_triangle.points[2].x, projected_triangle.points[2].y, projected_triangle.points[0].x, projected_triangle.points[0].y, 0xFFA8DADC);
 	}
 	
 

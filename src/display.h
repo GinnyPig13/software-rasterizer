@@ -20,6 +20,7 @@ extern int grid_multiple_of;
 bool initialize_window(void);
 void draw_grid(int multiple_of);
 void draw_pixel(int x, int y, uint32_t color);
+void draw_line(int x0, int y0, int x1, int y1, uint32_t color);
 void draw_rect(int top_left_x, int top_left_y, int width, int height, uint32_t color);
 void render_color_buffer(void);
 void clear_color_buffer(uint32_t color);
